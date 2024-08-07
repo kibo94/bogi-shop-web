@@ -1,0 +1,127 @@
+/* Font families */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --action: #283EB0;
+    --primary:#F2F0F0
+   
+  }
+  
+
+@font-face {
+    font-family: 'RobotoRegular';
+    src: url('../public/assets/fonts/RobotoCondensed-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: RobotoRegular;
+}
+
+
+body {
+    background: var(--primary);
+
+}
+
+.container {
+    max-width: 1196px;
+    margin: 0 auto;
+}
+
+.hero {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+
+.hero .heading {
+    position: absolute;
+    width: 712px;
+    max-width: 712px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 150px;
+    font-weight: normal;
+
+}
+
+.subheading {
+    font-size: 50px;
+    margin-bottom: 50px;
+    font-weight: normal;
+
+}
+
+.products {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: start;
+}
+
+.product {
+    background: white;
+    border-radius: 15px;
+    padding: 23px;
+    width: calc(33.33% - 25px);
+
+    cursor: pointer;
+
+}
+
+.product svg {
+    cursor: pointer;
+}
+.product .productName {
+    width: 235px;
+    font-size: 25px;
+}
+
+.product .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 26px;
+}
+
+.product .product-footer .price {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.auth-input{
+    width: 413px;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 10px;
+}
+.auth-button {
+    background: var(--action);
+    width: 357px;
+    padding: 5px 0;
+    color: white;
+    font-size: 25px;
+    border-radius: 10px;
+    font-weight: normal;
+}
+
+.error-message{
+    color: red;
+}
+
+
+@media only screen and (max-width: 500px) {
+   .hero .heading {
+    font-size: 40px;
+    width: auto;
+   }
+  }
