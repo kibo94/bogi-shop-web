@@ -15,5 +15,4 @@ function Users({ users }: UsersInterface) {
     </div>
   );
 }
-
 export default Users;
