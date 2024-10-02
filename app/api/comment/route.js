@@ -1,4 +1,4 @@
-import { connectToDB } from "@utils/database";
+import { connectToDB } from "../../../utilis/database";
 import Comment from "../../../models/mongo/comment";
 
 export const GET = async (request) => {

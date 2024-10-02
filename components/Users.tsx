@@ -6,8 +6,8 @@ interface UsersInterface {
 function Users({ users }: UsersInterface) {
   return (
     <div>
-      {users.map((user) => (
-        <div className="flex justify-between">
+      {users.map((user, index) => (
+        <div key={index} className="flex justify-between">
           <h1>{user.email}</h1>
           <h2>{user?.isAdmin ? "Admin" : "User"}</h2>
         </div>

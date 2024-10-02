@@ -3,7 +3,7 @@ import React from "react";
 import Products from "../../components/Products";
 import { useProduct } from "../context/ProductContext";
 
-async function FavoritesPage() {
+function FavoritesPage() {
   const { favorites } = useProduct();
 
   return (

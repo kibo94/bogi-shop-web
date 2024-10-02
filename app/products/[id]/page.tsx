@@ -91,8 +91,9 @@ function SingleProduct() {
         <h3 className="text-xl mb-2">Comments</h3>
         <div className="flex gap-10">
           {comments.length > 0 &&
-            comments.map((cmt: any) => (
+            comments.map((cmt: any, index) => (
               <Comment
+                key={index}
                 desc={cmt.comment}
                 email={cmt.creator.setComments}
                 rating={cmt.rating}
