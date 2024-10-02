@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import NavBar from "./components/NavBar";
+import NavBar from "../components/NavBar";
 import { ProductProvider } from "./context/ProductContext";
-import ProductAlert from "./components/ProductAlert";
+import Alert from "../components/Alert";
 import { AuthProvider } from "./context/AuthContext";
-import SideBar from "./components/SideBar";
+import Provider from "@components/SessionProvider";
+import { GlobalProvider } from "./context/GlobalContext";
+import { Inter as FontSans } from "next/font/google";
+import { cn } from "@lib/utils";
 
-const inter = Inter({ subsets: ["latin"] });
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Bogi Shop 1.0",
@@ -22,18 +27,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <div className="container">
+      <body className={cn("font-sans", fontSans.variable)}>
+        <GlobalProvider>
+          <Alert />
+        </GlobalProvider>
+        <Provider>
           <AuthProvider>
             <ProductProvider>
               <NavBar />
-              <div className="mt-28"></div>
-              {children}
-              <ProductAlert />
-              <div className="mb-28"></div>
+              <div className="container">{children}</div>
+              <div className="footer mt-20">CPY BY BOJAN947</div>
             </ProductProvider>
           </AuthProvider>
-        </div>
+        </Provider>
       </body>
     </html>
   );

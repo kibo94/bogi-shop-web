@@ -1,10 +1,9 @@
 "use client";
-import React, { use } from "react";
+import React from "react";
 import { useAuth } from "../context/AuthContext";
 
 function Profile() {
   const { user } = useAuth();
-
   return (
     <div className="flex justify-center items-center h-screen flex-col">
       <h1 className="text-6xl mb-8">Profile</h1>

@@ -1,15 +1,18 @@
-import Products from "./components/Products";
-import { ProductModel } from "./models/product";
-import { axiosInstance } from "./utilis/api";
+"use client";
+import { useEffect, useState } from "react";
+import Products from "../components/Products";
+import { ProductModel } from "../models/product";
 
-export default async function Home() {
-  let products: ProductModel[] = [];
-  try {
-    const res = await axiosInstance.get("products");
-    products = await res.data;
-  } catch (error) {
-    console.log(error);
-  }
+export default function Home() {
+  const [products, setProducts] = useState<ProductModel[]>([]);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await fetch(`/api/products`);
+      const products: ProductModel[] = await response.json();
+      setProducts(products);
+    };
+    fetchPosts();
+  }, []);
 
   return (
     <>

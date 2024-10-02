@@ -1,7 +1,14 @@
 "use client";
-import { useContext, createContext, ReactNode, useState } from "react";
-import { ProductModel } from "../models/product";
-import { axiosInstance } from "../utilis/api";
+import {
+  useContext,
+  createContext,
+  ReactNode,
+  useState,
+  useEffect,
+} from "react";
+import { ProductModel } from "../../models/product";
+import { axiosInstance } from "../../utilis/api";
+import { useSession } from "next-auth/react";
 interface Alert {
   message: String;
   show: boolean;
@@ -9,21 +16,15 @@ interface Alert {
 type productsContextType = {
   cart: ProductModel[];
   favorites: ProductModel[];
-  alert: Alert;
   addToCart: (product: ProductModel) => void;
   addToFavorites: (product: ProductModel) => void;
-  openAlert: (message: String) => void;
-  fetchProducts: () => void;
 };
 
 const productContextDefaultValues: productsContextType = {
   cart: [],
   favorites: [],
-  alert: { message: "", show: false },
   addToCart: () => {},
   addToFavorites: () => {},
-  openAlert: () => {},
-  fetchProducts: () => {},
 };
 
 const ProductContext = createContext<productsContextType>(
@@ -38,30 +39,30 @@ type Props = {
   children: ReactNode;
 };
 export function ProductProvider({ children }: Props) {
-  const [alert, setAlert] = useState<Alert>({ message: "", show: false });
   const [cart, setCart] = useState<ProductModel[]>([]);
   const [favorites, setFavorites] = useState<ProductModel[]>([]);
+  const { data: session }: any = useSession();
+  useEffect(() => {
+    async function fetchFavorites() {
+      const response = await fetch(`/api/user/${session?.user.id}/favorites`);
+      const favorites = await response.json();
+      setFavorites(favorites);
+    }
+    fetchFavorites();
+  }, [session?.user.id]);
 
-  function openAlert(message: String) {
-    setAlert({ message, show: true });
-    setTimeout(() => setAlert({ ...alert, show: false }), 1000);
-  }
   function addToCartHandler(product: ProductModel) {
     setCart([...cart, product]);
-    openAlert("Product has been added to the cart");
   }
   function addToFavoritesHandler(product: ProductModel) {
-    setFavorites([...favorites, product]);
-    openAlert("Product has been added to the favorites");
+    // setFavorites([...favorites, product]);
+    // openAlert("Product has been added to the favorites");
   }
   const value = {
     cart: cart,
     favorites: favorites,
-    alert: alert,
     addToCart: addToCartHandler,
     addToFavorites: addToFavoritesHandler,
-    openAlert,
-    fetchProducts,
   };
 
   async function fetchProducts() {

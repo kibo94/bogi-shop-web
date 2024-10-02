@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "../context/AuthContext";
-import FormErrors from "../components/FormErrors";
+import FormErrors from "../../components/FormErrors";
 
 function RegisterPage() {
   const [email, setEmail] = useState("");

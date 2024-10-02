@@ -1,15 +1,20 @@
-import React from "react";
-import { ProductModel } from "../models/product";
-import Products from "../components/Products";
+"use client";
+import React, { useEffect, useState } from "react";
+import { ProductModel } from "../../models/product";
+import Products from "../../components/Products";
 var apiUrl = "http://localhost:4000";
-async function ProductsPage() {
-  const res = await fetch(`${apiUrl}/products`);
-  const products: ProductModel[] = await res.json();
-  return (
-    <div className="products">
-      <Products products={products} />
-    </div>
-  );
+function ProductsPage() {
+  const [products, setProducts] = useState<ProductModel[]>([]);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await fetch(`/api/products`);
+      const products: ProductModel[] = await response.json();
+      setProducts(products);
+    };
+    fetchPosts();
+  }, []);
+
+  return <Products products={products} />;
 }
 
 export default ProductsPage;

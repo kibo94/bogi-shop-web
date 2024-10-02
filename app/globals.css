@@ -1,127 +1,176 @@
-/* Font families */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    --action: #283EB0;
-    --primary:#F2F0F0
-   
+@layer base {
+  :root {
+    /* --background: 0 0% 100%; */
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
   }
-  
 
-@font-face {
-    font-family: 'RobotoRegular';
-    src: url('../public/assets/fonts/RobotoCondensed-Regular.ttf');
-    font-weight: normal;
-    font-style: normal;
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: RobotoRegular;
-}
-
-
-body {
-    background: var(--primary);
-
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply  text-foreground;
+  }
 }
 
 .container {
-    max-width: 1196px;
-    margin: 0 auto;
+  max-width: 1196px;
+  margin: 0 auto;
 }
 
 .hero {
-    width: 100%;
-    height: 100vh;
-    position: relative;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: grid;
+  place-items: center;
+
 }
 
 .hero .heading {
-    position: absolute;
-    width: 712px;
-    max-width: 712px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 150px;
-    font-weight: normal;
+
+
+
+  font-size: 150px;
+  font-weight: normal;
 
 }
 
 .subheading {
-    font-size: 50px;
-    margin-bottom: 50px;
-    font-weight: normal;
+  font-size: 50px;
+  margin-bottom: 50px;
+  font-weight: normal;
 
 }
 
 .products {
-    display: flex;
-    gap: 25px;
-    flex-wrap: wrap;
-    justify-content: start;
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  justify-content: start;
 }
 
 .product {
-    background: white;
-    border-radius: 15px;
-    padding: 23px;
-    width: calc(33.33% - 25px);
+  background: rgb(243, 242, 242);
+  border-radius: 15px;
+  padding: 23px;
+  width: calc(33.33% - 25px);
+  height: 400px;
 
-    cursor: pointer;
+  cursor: pointer;
 
 }
 
 .product svg {
-    cursor: pointer;
+  cursor: pointer;
 }
 .product .productName {
-    width: 235px;
-    font-size: 25px;
+  width: 235px;
+  font-size: 25px;
 }
 
 .product .product-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-top: 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  position: absolute;
+  margin-top: 40px;
+  bottom: 20px;
+  padding: 0 20px;
+  left: 0;
+  width: 100%;
 }
 
 .product .product-footer .price {
-    font-size: 30px;
-    line-height: 1;
+  font-size: 30px;
+  line-height: 1;
 }
 
 .auth-input{
-    width: 413px;
-    border: none;
-    padding: 14px 20px;
-    border-radius: 10px;
+  width: 413px;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 10px;
 }
 .auth-button {
-    background: var(--action);
-    width: 357px;
-    padding: 5px 0;
-    color: white;
-    font-size: 25px;
-    border-radius: 10px;
-    font-weight: normal;
+  background: var(--action);
+  width: 357px;
+  padding: 5px 0;
+  color: white;
+  font-size: 25px;
+  border-radius: 10px;
+  font-weight: normal;
 }
 
 .error-message{
-    color: red;
+  color: red;
+}
+.footer{
+  padding: 30px;
+  text-align: center;
+  background: #f9f9f9;
+  width: 100%;
+  
 }
 
-
 @media only screen and (max-width: 500px) {
-   .hero .heading {
-    font-size: 40px;
-    width: auto;
-   }
-  }
+ .hero .heading {
+  font-size: 40px;
+  width: auto;
+ }
+}

@@ -1,7 +1,7 @@
 "use client";
 import { ReactNode, createContext, useContext, useState } from "react";
-import { User } from "../models/user";
-import { axiosInstance } from "../utilis/api";
+import { User } from "../../models/user";
+import { axiosInstance } from "../../utilis/api";
 import { useRouter } from "next/navigation";
 
 type authContextType = {

@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import z from "zod";
 import { useAuth } from "../context/AuthContext";
-import FormErrors from "../components/FormErrors";
+import FormErrors from "../../components/FormErrors";
+import LoginLayout from "./layout";
 
 function LoginPage() {
   const { loginUser, error, resetError } = useAuth();
@@ -73,5 +74,7 @@ function LoginPage() {
     return valid;
   }
 }
-
+LoginPage.getLayout = (page: any) => {
+  return <LoginLayout>{page}</LoginLayout>;
+};
 export default LoginPage;
