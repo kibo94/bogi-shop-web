@@ -17,11 +17,12 @@ const Product = (props: ProductInterface) => {
   const { addToCart, removeFromFavorites, favorites, addToFavorites } =
     useProduct();
 
-  const { name, price, onStack, rating, details, _id } = props.product;
+  const { productImageUrl, _id } = props.product;
   const { data: session }: any = useSession();
   function productDetails(id: any) {
     router.push(`/products/${id}`, {});
   }
+  console.log(productImageUrl);
 
   return (
     <div className="product relative">
@@ -96,10 +97,10 @@ const Product = (props: ProductInterface) => {
 
       <Image
         className="prd-image"
-        src={props.product.productImageUrl || productImg}
+        src={productImageUrl}
         alt="product-img"
         width={200}
-        height={50}
+        height={200}
       />
       <p className="productName mt-3">{props.product.name}</p>
       <div className="product-footer">

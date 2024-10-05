@@ -161,9 +161,7 @@ export function ProductForm({
           body: JSON.stringify({
             ...values,
             productImageUrl: `${
-              product?.productImageUrl
-                ? product.productImageUrl
-                : downloadURL.length
+              product?.productImageUrl ? product.productImageUrl : downloadURL
             }`,
             id: isEdit ? product?._id : null,
           }),
