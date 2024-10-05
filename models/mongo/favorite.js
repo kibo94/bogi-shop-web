@@ -1,10 +1,18 @@
 import { Schema, model, models } from 'mongoose';
 
 const FavoriteSchema = new Schema({
-    creator: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  product: {
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
+  },
+  productImageUrl: {
+    type: String,
+    required: [true, 'productImageurl is required.'],
+  },
   name: {
     type: String,
     required: [true, 'Name is required.'],

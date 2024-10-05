@@ -19,10 +19,8 @@ function SingleProduct() {
       const res2 = await fetch(`/api/products/${id}`);
       const product = await res2.json();
       setProduct(product);
-      console.log(product);
       const response = await fetch(`/api/products/${id}/comments`);
       const data = await response.json();
-      console.log(data);
       setComments(data);
     };
     fetchPosts();

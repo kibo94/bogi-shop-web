@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
-import { json } from "stream/consumers";
+import { useGlobal } from "@app/context/GlobalContext";
 function AddAdminForm() {
   const formSchema = z.object({
     email: z
@@ -32,13 +32,13 @@ function AddAdminForm() {
   });
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 mt-5">
         <div>
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="mb-3">
+              <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="Name" />
@@ -48,13 +48,12 @@ function AddAdminForm() {
             )}
           />
         </div>
-        <Button type="submit"> Add User</Button>
+        <Button type="submit">Add User</Button>
       </form>
     </Form>
   );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     fetch("/api/users/admin/new", {
       method: "POST",
       body: JSON.stringify({

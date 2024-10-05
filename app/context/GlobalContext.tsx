@@ -29,6 +29,7 @@ export function GlobalProvider({ children }: Props) {
   const [alert, setAlert] = useState<Alert>({ message: "", show: false });
 
   function openAlert(message: String) {
+    console.log("alert oepn");
     setAlert({ message, show: true });
     setTimeout(() => setAlert({ ...alert, show: false }), 1000);
   }

@@ -7,6 +7,8 @@ import { User } from "@models/user";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddAdminForm from "./_components/AddAdminForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import ProductForm from "./_components/CreateProductForm";
 
 const AdminPage = () => {
   const [products, setProducts] = useState<ProductModel[]>([]);
@@ -23,20 +25,30 @@ const AdminPage = () => {
     fetchPosts();
   }, []);
   return (
-    <div>
-      <div className="flex mt-5 items-center justify-between">
-        <Button color="#333">
-          <Link href="/admin/products/new" className="black_btn nav-link">
-            Create Product
-          </Link>
-        </Button>
-      </div>
-      <h1 className="mt-5">Products</h1>
-      <Products products={products} isAdmin={true} />
-      <h1 className="mt-5">Admin Users</h1>
-      <AddAdminForm />
-
-      <Users users={users} />
+    <div className="h-full">
+      <Tabs defaultValue="account" className="mt-5">
+        <TabsList className="gap-3 flex">
+          <TabsTrigger value="account">
+            <Button color="#333">Products</Button>
+          </TabsTrigger>
+          <TabsTrigger value="create-product">
+            <Button color="#333">Create Product</Button>
+          </TabsTrigger>
+          <TabsTrigger value="password">
+            <Button color="#333">Users</Button>
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="account">
+          <Products products={products} isAdmin={true} />
+        </TabsContent>
+        <TabsContent value="create-product">
+          <ProductForm type="Create" />
+        </TabsContent>
+        <TabsContent value="password">
+          <AddAdminForm />
+          <Users users={users} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

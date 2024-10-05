@@ -1,12 +1,13 @@
-
-export interface ProductModel {
+export interface FavoriteModel {
     _id:string
+    product:string;
+    user:string;
     price: number;
     name: string;
     quantity: number,
-    creator:string
     rating:number,
     details:string
     onStack:boolean
+    creator:string
     productImageUrl:string
 }

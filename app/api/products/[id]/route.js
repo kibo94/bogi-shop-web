@@ -1,8 +1,6 @@
 import Product from "../../../../models/mongo/product";
 import { connectToDB } from "../../../../utilis/database";
 
-
-
 export const GET = async (request, { params }) => {
     try {
         await connectToDB()

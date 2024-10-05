@@ -5,7 +5,7 @@ interface UsersInterface {
 }
 function Users({ users }: UsersInterface) {
   return (
-    <div>
+    <div className="mt-5">
       {users.map((user, index) => (
         <div key={index} className="flex justify-between">
           <h1>{user.email}</h1>

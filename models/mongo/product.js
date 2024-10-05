@@ -5,6 +5,10 @@ const PromptSchema = new Schema({
     type: String,
     required: [true, 'Name is required.'],
   },
+  productImageUrl: {
+    type: String,
+    required: [true, 'productImageurl is required.'],
+  },
   quantity: {
     type: Number,
     required: [true, 'quantity is required.'],
@@ -16,7 +20,7 @@ const PromptSchema = new Schema({
   rating: {
     type: Number,
     required: [true, 'rating is required.'],
-    
+
   },
   price: {
     type: Number,
@@ -26,7 +30,6 @@ const PromptSchema = new Schema({
     type: String,
     required: [true, 'details is required.'],
   },
-
 });
 
 const Product = models.Product || model('Product', PromptSchema);

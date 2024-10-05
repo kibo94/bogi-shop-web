@@ -30,16 +30,16 @@ export default function RootLayout({
       <body className={cn("font-sans", fontSans.variable)}>
         <GlobalProvider>
           <Alert />
+          <Provider>
+            <AuthProvider>
+              <ProductProvider>
+                <NavBar />
+                <div className="container">{children}</div>
+                <div className="footer mt-20">CPY BY BOJAN947</div>
+              </ProductProvider>
+            </AuthProvider>
+          </Provider>
         </GlobalProvider>
-        <Provider>
-          <AuthProvider>
-            <ProductProvider>
-              <NavBar />
-              <div className="container">{children}</div>
-              <div className="footer mt-20">CPY BY BOJAN947</div>
-            </ProductProvider>
-          </AuthProvider>
-        </Provider>
       </body>
     </html>
   );

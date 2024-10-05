@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { ProductModel } from "../../models/product";
 import Products from "../../components/Products";
-var apiUrl = "http://localhost:4000";
 function ProductsPage() {
   const [products, setProducts] = useState<ProductModel[]>([]);
   useEffect(() => {
