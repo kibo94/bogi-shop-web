@@ -136,40 +136,43 @@ export function ProductForm({
   );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const storageRef = ref(
-      storage,
-      `products/${product?.name || values.name}/product.png`
-    );
-    const uploadTask = uploadBytesResumable(storageRef, image!);
+    if (image?.name) {
+      const storageRef = ref(
+        storage,
+        `products/${product?.name || values.name}/product.png`
+      );
+      const uploadTask = uploadBytesResumable(storageRef, image!);
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot: any) => {
-        const progressPercent =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(progressPercent);
-      },
-      (error: any) => {
-        console.error("Error uploading file:", error);
-      },
-      async () => {
-        // Get the download URL and store metadata in Firestore
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        setDownloadURL(downloadURL);
-        await fetch("/api/products", {
-          method: isEdit ? "PUT" : "POST",
-          body: JSON.stringify({
-            ...values,
-            productImageUrl: `${
-              product?.productImageUrl ? product.productImageUrl : downloadURL
-            }`,
-            id: isEdit ? product?._id : null,
-          }),
-        });
-        openAlert(`Product has been ${isEdit ? "updated" : "created"}`);
-        router.push("/admin");
-      }
-    );
+      uploadTask.on(
+        "state_changed",
+        (snapshot: any) => {
+          const progressPercent =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(progressPercent);
+        },
+        (error: any) => {
+          console.error("Error uploading file:", error);
+        },
+        async () => {
+          // Get the download URL and store metadata in Firestore
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log(downloadURL);
+          setDownloadURL(downloadURL);
+          await fetch("/api/products", {
+            method: isEdit ? "PUT" : "POST",
+            body: JSON.stringify({
+              ...values,
+              productImageUrl: `${
+                product?.productImageUrl ? product.productImageUrl : downloadURL
+              }`,
+              id: isEdit ? product?._id : null,
+            }),
+          });
+          openAlert(`Product has been ${isEdit ? "updated" : "created"}`);
+          router.push("/admin");
+        }
+      );
+    }
   }
 }
 
