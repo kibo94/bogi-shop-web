@@ -142,7 +142,6 @@ export function ProductForm({
     );
     const uploadTask = uploadBytesResumable(storageRef, image!);
 
-    // Track the upload progress
     uploadTask.on(
       "state_changed",
       (snapshot: any) => {
