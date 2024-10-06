@@ -5,7 +5,7 @@ import Provider from "@components/SessionProvider";
 import { AuthProvider } from "@app/context/AuthContext";
 import { ProductProvider } from "@app/context/ProductContext";
 import NavBar from "@components/NavBar";
-import Alert Dialog from "@components/Alert";
+import AlertDialog from "@components/AlertDialog";
 
 export default function LoginLayout({
   children,
