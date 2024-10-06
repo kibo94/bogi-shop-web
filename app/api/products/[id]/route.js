@@ -1,7 +1,7 @@
 import Product from "../../../../models/mongo/product";
 import { connectToDB } from "../../../../utilis/database";
 
-export const GET = async ({ params }) => {
+export const GET = async (request, { params }) => {
     try {
         await connectToDB()
         const product = await Product.findById(params.id)
