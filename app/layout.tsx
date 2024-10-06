@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "../components/NavBar";
 import { ProductProvider } from "./context/ProductContext";
-import AlertDialog from "../components/Alert";
+import AlertDialog from "../components/AlertDialog";
 import { AuthProvider } from "./context/AuthContext";
 import Provider from "@components/SessionProvider";
 import { GlobalProvider } from "./context/GlobalContext";
