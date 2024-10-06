@@ -20,6 +20,7 @@ export const DELETE = async (request) => {
         const favorites = await Favorite.find({ creator: creator })
         return new Response(JSON.stringify(favorites), { status: 200 })
     } catch (error) {
+        console.log("errr")
         return new Response("Failed to fetch prompts created by user", { status: 500 })
     }
 } 

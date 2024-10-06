@@ -9,15 +9,13 @@ import React, { useEffect, useState } from "react";
 import AddAdminForm from "./_components/AddAdminForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import ProductForm from "./_components/CreateProductForm";
+import { useProduct } from "@app/context/ProductContext";
 
 const AdminPage = () => {
-  const [products, setProducts] = useState<ProductModel[]>([]);
+  const { products } = useProduct();
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`/api/products`);
-      const products: ProductModel[] = await response.json();
-      setProducts(products);
       const response2 = await fetch(`/api/users/admin`);
       const users: User[] = await response2.json();
       setUsers(users);
@@ -39,7 +37,7 @@ const AdminPage = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="account">
-          <Products products={products} isAdmin={true} />
+          <Products products={products.data} isAdmin={true} />
         </TabsContent>
         <TabsContent value="create-product">
           <ProductForm type="Create" />

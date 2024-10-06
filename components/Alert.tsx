@@ -1,20 +1,19 @@
 "use client";
 import React from "react";
 import { useGlobal } from "@app/context/GlobalContext";
-function Alert() {
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+function AlertDialog() {
   const { alert } = useGlobal();
   return (
     <>
       {alert.show ? (
-        <div
-          className="bg-green-100 border border-green-400 text-black-700 px-4 py-3 rounded fixed top-20 right-20 z-22"
-          role="alert"
-        >
-          <span className="block sm:inline">{alert.message}</span>
-        </div>
+        <Alert className="alert">
+          <AlertTitle></AlertTitle>
+          <AlertDescription>{alert.message}</AlertDescription>
+        </Alert>
       ) : null}
     </>
   );
 }
 
-export default Alert;
+export default AlertDialog;

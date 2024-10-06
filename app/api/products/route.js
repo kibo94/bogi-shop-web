@@ -9,9 +9,9 @@ export const POST = async (request) => {
     try {
         await connectToDB();
         const newProduct = new Product({ name: name, quantity: 5, details: description, price: price, onStack: true, rating: 3, productImageUrl: productImageUrl });
-        console.log(newProduct)
         await newProduct.save();
-        return new Response(JSON.stringify(newProduct), { status: 201 })
+        const proudcts = await Product.find({})
+        return new Response(JSON.stringify(proudcts), { status: 201 })
     } catch (error) {
         return new Response("Failed to create a new prompt", { status: 500 });
     }
@@ -36,6 +36,7 @@ export const PUT = async (request) => {
         product.price = price;
         product.productImageUrl = productImageUrl;
         product.save();
+        console.log(product)
         return new Response(JSON.stringify(product), { status: 201 })
     } catch (error) {
         return new Response("Failed to create a new prompt", { status: 500 });

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "../components/NavBar";
 import { ProductProvider } from "./context/ProductContext";
-import Alert from "../components/Alert";
+import AlertDialog from "../components/Alert";
 import { AuthProvider } from "./context/AuthContext";
 import Provider from "@components/SessionProvider";
 import { GlobalProvider } from "./context/GlobalContext";
@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn("font-sans", fontSans.variable)}>
         <GlobalProvider>
-          <Alert />
+          <AlertDialog />
           <Provider>
             <AuthProvider>
               <ProductProvider>

@@ -15,11 +15,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { ProductModel } from "@models/product";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { storage } from "../../../lib/firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useGlobal } from "@app/context/GlobalContext";
 import Image from "next/image";
+import { useProduct } from "@app/context/ProductContext";
+import { Progress } from "@/components/ui/progress";
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -52,15 +55,48 @@ export function ProductForm({
     },
   });
 
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState<File>();
+  const [isFileUploadProgess, setIsFileUploadProgress] = useState(false);
+  const [productImageUrl, setProductImgUrl] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
   const [downloadURL, setDownloadURL] = useState<string>("");
+  const { fetchProducts } = useProduct();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0]);
+      const storageRef = ref(
+        storage,
+        `tempImages/${form.getValues().name}/product.png`
+      );
+      const uploadTask = uploadBytesResumable(storageRef, e.target.files[0]);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot: any) => {
+          setIsFileUploadProgress(true);
+          const progressPercent =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(progressPercent);
+        },
+        (error: any) => {
+          console.error("Error uploading file:", error);
+        },
+        async () => {
+          const dwnURL = await getDownloadURL(uploadTask.snapshot.ref);
+          setProductImgUrl(dwnURL);
+          setIsFileUploadProgress(false);
+          setProgress(0);
+          // setDownloadURL(downloadURL);
+        }
+      );
     }
   };
+  useEffect(() => {
+    if (isEdit) {
+      setProductImgUrl(product?.productImageUrl!);
+    }
+  }, []);
   return (
     <>
       <h1 className="text-2xl mb-5">{type} product</h1>
@@ -104,12 +140,13 @@ export function ProductForm({
                   </FormControl>
                   <FormMessage />
                   <Image
-                    className="prd-image"
-                    src={product?.productImageUrl || productImg}
+                    className="edit-product-image"
+                    src={productImageUrl}
                     alt="admin-product"
                     width={200}
                     height={200}
                   />
+                  {isFileUploadProgess && <Progress value={progress} />}
                 </FormItem>
               )}
             />
@@ -134,12 +171,11 @@ export function ProductForm({
       </Form>
     </>
   );
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (image?.name) {
+    try {
       const storageRef = ref(
         storage,
-        `products/${product?.name || values.name}/product.png`
+        `tempImages/${form.getValues().name}/product.png`
       );
       const uploadTask = uploadBytesResumable(storageRef, image!);
 
@@ -154,24 +190,24 @@ export function ProductForm({
           console.error("Error uploading file:", error);
         },
         async () => {
-          // Get the download URL and store metadata in Firestore
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          console.log(downloadURL);
-          setDownloadURL(downloadURL);
+          const dwnURL = await getDownloadURL(uploadTask.snapshot.ref);
           await fetch("/api/products", {
             method: isEdit ? "PUT" : "POST",
             body: JSON.stringify({
               ...values,
-              productImageUrl: `${
-                product?.productImageUrl ? product.productImageUrl : downloadURL
-              }`,
+              productImageUrl: `${dwnURL}`,
               id: isEdit ? product?._id : null,
             }),
           });
-          openAlert(`Product has been ${isEdit ? "updated" : "created"}`);
-          router.push("/admin");
+
+          fetchProducts();
         }
       );
+
+      openAlert(`Product has been ${isEdit ? "updated" : "created"}`);
+      router.push("/admin");
+    } catch (error: any) {
+      openAlert(error.message);
     }
   }
 }
