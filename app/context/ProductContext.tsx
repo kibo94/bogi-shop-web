@@ -10,13 +10,16 @@ import { ProductModel } from "../../models/product";
 import { useSession } from "next-auth/react";
 import { FavoriteModel } from "@models/favorite";
 import { useGlobal } from "./GlobalContext";
-interface Alert {
-  message: String;
-  show: boolean;
+interface ProductState {
+  loading: boolean;
+  data: ProductModel[];
+  error: string | null;
 }
+
 type productsContextType = {
   cart: ProductModel[];
   favorites: FavoriteModel[];
+  products: ProductState;
   addToCart: (product: ProductModel) => void;
   addToFavorites: (product: ProductModel) => void;
   removeFromFavorites: (id: String) => void;
@@ -28,6 +31,7 @@ const productContextDefaultValues: productsContextType = {
   addToCart: () => {},
   addToFavorites: () => {},
   removeFromFavorites: () => {},
+  products: { data: [], error: null, loading: false },
 };
 
 const ProductContext = createContext<productsContextType>(
@@ -45,7 +49,32 @@ export function ProductProvider({ children }: Props) {
   const [cart, setCart] = useState<ProductModel[]>([]);
   const [favorites, setFavorites] = useState<FavoriteModel[]>([]);
   const { data: session }: any = useSession();
+  const [products, setProducts] = useState<ProductState>({
+    loading: false,
+    data: [],
+    error: null,
+  });
   const { openAlert } = useGlobal();
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setProducts({ loading: true, data: [], error: null });
+      try {
+        const response = await fetch(`/api/products`);
+        const products: ProductModel[] = await response.json();
+        setProducts({ loading: false, data: products, error: null });
+      } catch (err: any) {
+        openAlert(err.message);
+        setProducts({
+          loading: false,
+          data: [],
+          error: err.message,
+        });
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   useEffect(() => {
     fetchFavorites();
   }, [session?.user.id]);
@@ -101,6 +130,7 @@ export function ProductProvider({ children }: Props) {
     addToFavorites: addToFavoritesHandler,
     fetchFavorites: fetchFavorites,
     removeFromFavorites: removeFromFavorites,
+    products: products,
   };
 
   return (

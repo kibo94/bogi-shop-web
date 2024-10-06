@@ -23,7 +23,7 @@ export const GET = async () => {
         const proudcts = await Product.find({})
         return new Response(JSON.stringify(proudcts), { status: 201 })
     } catch (error) {
-        return new Response("Failed to create a new sdas", { status: 500 });
+        return new Response("Something went wrong", { status: 500 });
     }
 }
 export const PUT = async (request) => {

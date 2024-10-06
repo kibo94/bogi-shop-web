@@ -2,18 +2,10 @@
 import { useEffect, useState } from "react";
 import Products from "../components/Products";
 import { ProductModel } from "../models/product";
+import { useProduct } from "./context/ProductContext";
 
 export default function Home() {
-  const [products, setProducts] = useState<ProductModel[]>([]);
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch(`/api/products`);
-      const products: ProductModel[] = await response.json();
-      setProducts(products);
-    };
-    fetchPosts();
-  }, []);
-
+  const { products } = useProduct();
   return (
     <>
       <div className="hero">
@@ -21,7 +13,11 @@ export default function Home() {
       </div>
       <h1 className="subheading">Products</h1>
       <div className="products">
-        <Products products={products} />
+        {products.loading ? (
+          <h2>Loading products...</h2>
+        ) : (
+          <Products products={products.data} />
+        )}
       </div>
     </>
   );
