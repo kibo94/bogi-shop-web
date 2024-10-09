@@ -74,20 +74,27 @@
 }
 
 .hero {
-  width: 100%;
+
   height: 100vh;
   position: relative;
   display: grid;
   place-items: center;
 
 }
+.hero .coverImage{
+  background-image: url("../public/assets/images/shop-bck.png");
+  position: absolute;
+  height: 100%;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: -1;
+}
 
 .hero .heading {
-
-
-
   font-size: 150px;
   font-weight: normal;
+  color: white;
 
 }
 

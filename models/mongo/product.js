@@ -5,6 +5,10 @@ const PromptSchema = new Schema({
     type: String,
     required: [true, 'Name is required.'],
   },
+  category: {
+    type: Schema.Types.ObjectId,
+    ref: "Category",
+  },
   productImageUrl: {
     type: String,
     required: [true, 'productImageurl is required.'],

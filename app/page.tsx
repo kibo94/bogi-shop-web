@@ -1,14 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
 import Products from "../components/Products";
-import { ProductModel } from "../models/product";
-import { useProduct } from "./context/ProductContext";
+import useFetchData from "@hooks/useProducts";
 
 export default function Home() {
-  const { products } = useProduct();
+  const [products] = useFetchData("/api/products");
   return (
     <>
       <div className="hero">
+        <div className="coverImage"></div>
         <h1 className="heading">LET’S SHOP</h1>
       </div>
       <h1 className="subheading">Products</h1>

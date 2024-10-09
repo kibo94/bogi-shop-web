@@ -11,8 +11,9 @@ import { useRouter } from "next/navigation";
 import React from "react";
 interface ProductProps {
   id: string;
+  deleteProduct: () => void;
 }
-function ProductDropDown({ id }: ProductProps) {
+function ProductDropDown({ id, deleteProduct }: ProductProps) {
   const router = useRouter();
   return (
     <DropdownMenu>
@@ -32,7 +33,7 @@ function ProductDropDown({ id }: ProductProps) {
                 id,
               }),
             });
-            router.push("/admin");
+            deleteProduct();
           }}
         >
           Delete

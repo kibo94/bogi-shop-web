@@ -27,7 +27,9 @@ function NavBar() {
       setProviders(response);
     };
     setProvidersFn();
-    fetchAdminUsers();
+    if (session?.user) {
+      fetchAdminUsers();
+    }
   }, [session?.user]);
 
   return (

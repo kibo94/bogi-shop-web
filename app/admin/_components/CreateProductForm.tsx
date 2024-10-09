@@ -20,8 +20,17 @@ import { storage } from "../../../lib/firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useGlobal } from "@app/context/GlobalContext";
 import Image from "next/image";
-import { useProduct } from "@app/context/ProductContext";
 import { Progress } from "@/components/ui/progress";
+import useFetchProducts from "@hooks/useProducts";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -37,11 +46,13 @@ interface ProductFormProps {
   type: string;
   isEdit?: boolean;
   product?: ProductModel;
+  productCreated?: () => void;
 }
 export function ProductForm({
   type,
   isEdit = false,
   product,
+  productCreated = () => {},
 }: ProductFormProps) {
   const router = useRouter();
   const { openAlert } = useGlobal();
@@ -58,9 +69,10 @@ export function ProductForm({
   const [image, setImage] = useState<File>();
   const [isFileUploadProgess, setIsFileUploadProgress] = useState(false);
   const [productImageUrl, setProductImgUrl] = useState<string>("");
+  const [categories, fetchProducts] = useFetchProducts("/api/categories");
   const [progress, setProgress] = useState<number>(0);
   const [downloadURL, setDownloadURL] = useState<string>("");
-  const { fetchProducts } = useProduct();
+  const [category, setCategorie] = useState(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -97,6 +109,32 @@ export function ProductForm({
       setProductImgUrl(product?.productImageUrl!);
     }
   }, []);
+
+  async function updateProducts(
+    values: z.infer<typeof formSchema>,
+    url: string
+  ) {
+    await fetch("/api/products", {
+      method: isEdit ? "PUT" : "POST",
+      body: JSON.stringify({
+        ...values,
+        productImageUrl: `${url}`,
+        category: product?.category ? product.category : category,
+        id: isEdit ? product?._id : null,
+      }),
+    });
+
+    openAlert(`Product has been ${isEdit ? "updated" : "created"}`);
+    if (isEdit) {
+      router.push("/admin");
+    } else {
+      productCreated();
+    }
+  }
+
+  function selectTheProduct(cat: any) {
+    console.log(cat);
+  }
   return (
     <>
       <h1 className="text-2xl mb-5">{type} product</h1>
@@ -139,13 +177,41 @@ export function ProductForm({
                     <Input {...field} type="file" onChange={handleFileChange} />
                   </FormControl>
                   <FormMessage />
-                  <Image
-                    className="edit-product-image"
-                    src={productImageUrl}
-                    alt="admin-product"
-                    width={200}
-                    height={200}
-                  />
+                  {categories.loading ? (
+                    <h2>Loading categories...</h2>
+                  ) : (
+                    <Select
+                      onValueChange={(value: any) => {
+                        setCategorie(
+                          categories.data.find((cat: any) => cat.name == value)
+                        );
+                      }}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select a product categorie" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Category</SelectLabel>
+                          {categories.data.map((categorie: any) => (
+                            <SelectItem value={categorie.name}>
+                              {categorie.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                  {productImageUrl && (
+                    <Image
+                      className="edit-product-image"
+                      src={productImageUrl}
+                      alt="admin-product"
+                      width={200}
+                      height={200}
+                    />
+                  )}
+
                   {isFileUploadProgess && <Progress value={progress} />}
                 </FormItem>
               )}
@@ -173,39 +239,32 @@ export function ProductForm({
   );
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const storageRef = ref(
-        storage,
-        `tempImages/${form.getValues().name}/product.png`
-      );
-      const uploadTask = uploadBytesResumable(storageRef, image!);
+      if (image?.name) {
+        const storageRef = ref(
+          storage,
+          `products/${form.getValues().name}/product.png`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, image!);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot: any) => {
-          const progressPercent =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setProgress(progressPercent);
-        },
-        (error: any) => {
-          console.error("Error uploading file:", error);
-        },
-        async () => {
-          const dwnURL = await getDownloadURL(uploadTask.snapshot.ref);
-          await fetch("/api/products", {
-            method: isEdit ? "PUT" : "POST",
-            body: JSON.stringify({
-              ...values,
-              productImageUrl: `${dwnURL}`,
-              id: isEdit ? product?._id : null,
-            }),
-          });
-
-          fetchProducts();
-        }
-      );
-
-      openAlert(`Product has been ${isEdit ? "updated" : "created"}`);
-      router.push("/admin");
+        uploadTask.on(
+          "state_changed",
+          (snapshot: any) => {
+            const progressPercent =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setProgress(progressPercent);
+          },
+          (error: any) => {
+            console.error("Error uploading file:", error);
+          },
+          async () => {
+            const dwnURL = await getDownloadURL(uploadTask.snapshot.ref);
+            setDownloadURL(dwnURL);
+            await updateProducts(values, dwnURL);
+          }
+        );
+        return;
+      }
+      await updateProducts(values, productImageUrl);
     } catch (error: any) {
       openAlert(error.message);
     }

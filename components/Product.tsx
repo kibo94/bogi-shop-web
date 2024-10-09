@@ -1,5 +1,4 @@
 "use client";
-import productImg from "../public/assets/images/product-img.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useProduct } from "../app/context/ProductContext";
@@ -11,6 +10,7 @@ interface ProductInterface {
   product: ProductModel;
   isAdmin: boolean;
   isFavorites: boolean;
+  deleteProduct: () => void;
 }
 const Product = (props: ProductInterface) => {
   const router = useRouter();
@@ -92,7 +92,12 @@ const Product = (props: ProductInterface) => {
           </>
         )}
 
-        {props.isAdmin && <ProductDropDown id={props.product["_id"]} />}
+        {props.isAdmin && (
+          <ProductDropDown
+            id={props.product["_id"]}
+            deleteProduct={props.deleteProduct}
+          />
+        )}
       </div>
 
       <Image

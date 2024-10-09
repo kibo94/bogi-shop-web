@@ -2,18 +2,16 @@
 import Products from "@components/Products";
 import Users from "@components/Users";
 import { Button } from "@components/ui/button";
-import { ProductModel } from "@models/product";
 import { User } from "@models/user";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AddAdminForm from "./_components/AddAdminForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import ProductForm from "./_components/CreateProductForm";
-import { useProduct } from "@app/context/ProductContext";
-
+import useFetchData from "@hooks/useProducts";
 const AdminPage = () => {
-  const { products } = useProduct();
+  const [products, fetchProducts] = useFetchData("/api/products");
   const [users, setUsers] = useState<User[]>([]);
+  const [activeTab, setActiveTab] = useState("products");
   useEffect(() => {
     const fetchPosts = async () => {
       const response2 = await fetch(`/api/users/admin`);
@@ -22,27 +20,51 @@ const AdminPage = () => {
     };
     fetchPosts();
   }, []);
+
+  const handleTabChange = (value: any) => {
+    setActiveTab(value);
+    if (value == "products") {
+      fetchProducts();
+    }
+  };
+
+  function deleteProductHandler() {
+    fetchProducts();
+  }
+  function productCreated() {
+    fetchProducts();
+    setActiveTab("products");
+  }
+
   return (
     <div className="h-full">
-      <Tabs defaultValue="account" className="mt-5">
+      <Tabs value={activeTab} className="mt-5" onValueChange={handleTabChange}>
         <TabsList className="gap-3 flex">
-          <TabsTrigger value="account">
+          <TabsTrigger value="products">
             <Button color="#333">Products</Button>
           </TabsTrigger>
           <TabsTrigger value="create-product">
             <Button color="#333">Create Product</Button>
           </TabsTrigger>
-          <TabsTrigger value="password">
+          <TabsTrigger value="users">
             <Button color="#333">Users</Button>
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="account">
-          <Products products={products.data} isAdmin={true} />
+        <TabsContent value="products">
+          {products.loading ? (
+            <h2>Loading products ...</h2>
+          ) : (
+            <Products
+              products={products.data}
+              isAdmin={true}
+              deleteProduct={deleteProductHandler}
+            />
+          )}
         </TabsContent>
         <TabsContent value="create-product">
-          <ProductForm type="Create" />
+          <ProductForm type="Create" productCreated={productCreated} />
         </TabsContent>
-        <TabsContent value="password">
+        <TabsContent value="users">
           <AddAdminForm />
           <Users users={users} />
         </TabsContent>

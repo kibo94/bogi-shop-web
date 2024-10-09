@@ -5,10 +5,10 @@ import { connectToDB } from "../../../utilis/database";
 
 
 export const POST = async (request) => {
-    const { name, description, price, productImageUrl } = await request.json();
+    const { name, description, price, productImageUrl, category } = await request.json();
     try {
         await connectToDB();
-        const newProduct = new Product({ name: name, quantity: 5, details: description, price: price, onStack: true, rating: 3, productImageUrl: productImageUrl });
+        const newProduct = new Product({ name: name, quantity: 5, details: description, price: price, onStack: true, rating: 3, productImageUrl: productImageUrl, category: category });
         await newProduct.save();
         const proudcts = await Product.find({})
         return new Response(JSON.stringify(proudcts), { status: 201 })
@@ -27,7 +27,7 @@ export const GET = async () => {
     }
 }
 export const PUT = async (request) => {
-    const { name, description, price, id, productImageUrl } = await request.json();
+    const { name, description, price, id, productImageUrl, category } = await request.json();
     try {
         await connectToDB();
         const product = await Product.findById(id)
@@ -35,8 +35,8 @@ export const PUT = async (request) => {
         product.details = description
         product.price = price;
         product.productImageUrl = productImageUrl;
+        product.category = category;
         product.save();
-        console.log(product)
         return new Response(JSON.stringify(product), { status: 201 })
     } catch (error) {
         return new Response("Failed to create a new prompt", { status: 500 });

@@ -9,4 +9,5 @@ export interface ProductModel {
     details:string
     onStack:boolean
     productImageUrl:string
+    category:string
 }
