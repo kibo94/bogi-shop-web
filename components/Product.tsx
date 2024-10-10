@@ -33,10 +33,10 @@ const Product = (props: ProductInterface) => {
       <div className="flex justify-between">
         {props.isFavorites ? (
           <svg
-            className="z-10 relative"
+            className="z-10 relative mb-2"
             onClick={() => removeFromFavorites(_id)}
-            width="24"
-            height="24"
+            width="33"
+            height="33"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

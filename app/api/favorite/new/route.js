@@ -14,3 +14,14 @@ export const POST = async (request) => {
         return new Response("Failed to create a new favorite", { status: 500 });
     }
 }
+
+
+export const GET = async (request, { params }) => {
+    try {
+        await connectToDB()
+        const favorites = await Favorite.find({ creator: params.id })
+        return new Response(JSON.stringify(favorites), { status: 200 })
+    } catch (error) {
+        return new Response("Failed to fetch prompts created by user", { status: 500 })
+    }
+}

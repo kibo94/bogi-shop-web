@@ -1,15 +1,27 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Products from "../../components/Products";
-import { useProduct } from "../context/ProductContext";
+import { useSession } from "next-auth/react";
+import useFetchData from "@hooks/useProducts";
+import { useRouter } from "next/navigation";
 
 function FavoritesPage() {
-  const { favorites } = useProduct();
+  const { data: session, status }: any = useSession();
+  const router = useRouter();
+  // useEffect(() => {}, [session?.user.id]);
 
+  // const { favorites } = useProduct();
+  const [favorites, refetch] = useFetchData(
+    `/api/user/${session?.user.id}/favorites`
+  );
+
+  if (status === "loading") {
+    return <p>Loading session...</p>;
+  }
   return (
     <div className="h-screen">
-      {favorites.length > 0 ? (
-        <Products isFavorites={true} products={favorites} />
+      {favorites.data.length > 0 ? (
+        <Products isFavorites={true} products={favorites.data} />
       ) : (
         <h1>No favorites</h1>
       )}

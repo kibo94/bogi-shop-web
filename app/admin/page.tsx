@@ -9,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import ProductForm from "./_components/CreateProductForm";
 import useFetchData from "@hooks/useProducts";
 const AdminPage = () => {
-  const [products, fetchProducts] = useFetchData("/api/products");
+  const [products, refetch] = useFetchData("/api/products");
+
   const [users, setUsers] = useState<User[]>([]);
   const [activeTab, setActiveTab] = useState("products");
   useEffect(() => {
@@ -24,15 +25,15 @@ const AdminPage = () => {
   const handleTabChange = (value: any) => {
     setActiveTab(value);
     if (value == "products") {
-      fetchProducts();
+      refetch();
     }
   };
 
   function deleteProductHandler() {
-    fetchProducts();
+    refetch();
   }
   function productCreated() {
-    fetchProducts();
+    refetch();
     setActiveTab("products");
   }
 

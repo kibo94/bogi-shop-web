@@ -1,13 +1,11 @@
 import { useGlobal } from "@app/context/GlobalContext";
 import { ProductModel } from "@models/product";
 import { ProductState } from "@models/products-state";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-// Define your product model based on the structure of your product data
+const cache: any = {};
 
-// Define the return type of the hook
-
-const useFetchData = (url: string): [ProductState, React.Dispatch<void>] => {
+const useFetchData = (url: string): [ProductState, () => void] => {
   const [products, setProducts] = useState<ProductState>({
     loading: false,
     data: [],
@@ -15,14 +13,20 @@ const useFetchData = (url: string): [ProductState, React.Dispatch<void>] => {
   });
   const { openAlert } = useGlobal();
 
-  // Fetch products data
-  async function fetchProducts() {
+  // Function to fetch products data, with optional forceRefresh
+  const fetchProducts = async (forceRefresh = false) => {
+    if (!forceRefresh && cache[url]) {
+      setProducts({ loading: false, data: cache[url], error: null });
+      return;
+    }
+
     setProducts({ loading: true, data: [], error: null });
+
     try {
       const response = await fetch(url); // Fetch from the custom URL
-      const products: ProductModel[] = await response.json();
-      console.log(products);
-      setProducts({ loading: false, data: products, error: null });
+      const productsData: ProductModel[] = await response.json();
+      cache[url] = productsData; // Update the cache
+      setProducts({ loading: false, data: productsData, error: null });
     } catch (err: any) {
       setProducts({
         loading: false,
@@ -31,17 +35,28 @@ const useFetchData = (url: string): [ProductState, React.Dispatch<void>] => {
       });
       openAlert(err.message);
     }
-  }
+  };
+
+  // Refetch function that forces fresh data by invalidating cache
+  const refetch = useCallback(() => {
+    fetchProducts(true); // Pass `true` to bypass cache and refetch data
+  }, [url]);
 
   // Fetch the products on the initial render or when the URL changes
   useEffect(() => {
     if (url) {
-      fetchProducts();
+      if (cache[url]) {
+        // If cache exists, update the state immediately with cached data
+        setProducts({ loading: false, data: cache[url], error: null });
+      } else {
+        // If no cache, fetch from the API
+        fetchProducts();
+      }
     }
   }, [url]); // Dependency on the URL so it fetches when URL changes
 
-  // Return both the state and the setter function
-  return [products, fetchProducts];
+  // Return both the state and the refetch function
+  return [products, refetch];
 };
 
 export default useFetchData;

@@ -1,19 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { ProductModel } from "../../models/product";
+import React from "react";
 import Products from "../../components/Products";
+import useFetchData from "@hooks/useProducts";
 function ProductsPage() {
-  const [products, setProducts] = useState<ProductModel[]>([]);
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch(`/api/products`);
-      const products: ProductModel[] = await response.json();
-      setProducts(products);
-    };
-    fetchPosts();
-  }, []);
-
-  return <Products products={products} />;
+  const [products, setProducts] = useFetchData("/api/products");
+  return <Products products={products.data} />;
 }
 
 export default ProductsPage;

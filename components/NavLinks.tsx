@@ -1,16 +1,17 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useProduct } from "../app/context/ProductContext";
 import { useAuth } from "../app/context/AuthContext";
 import "../styles/sidebar.css";
+import { useSession } from "next-auth/react";
 interface NavLinksProps {
   closeSideBar: () => void;
   isAdmin?: boolean;
 }
 function NavLinks({ closeSideBar, isAdmin = false }: NavLinksProps) {
   const { cart, favorites } = useProduct();
-  const { user } = useAuth();
+
   return (
     <ul>
       <li onClick={() => closeSideBar()}>

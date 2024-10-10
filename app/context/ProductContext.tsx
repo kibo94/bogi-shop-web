@@ -8,14 +8,12 @@ import {
 } from "react";
 import { ProductModel } from "../../models/product";
 import { useSession } from "next-auth/react";
-import { FavoriteModel } from "@models/favorite";
 import { useGlobal } from "./GlobalContext";
 
 type productsContextType = {
   cart: ProductModel[];
-  favorites: FavoriteModel[];
+  favorites: ProductModel[];
   addToCart: (product: ProductModel) => void;
-  fetchProducts: () => void;
   addToFavorites: (product: ProductModel) => void;
   removeFromFavorites: (id: String) => void;
 };
@@ -24,7 +22,6 @@ const productContextDefaultValues: productsContextType = {
   cart: [],
   favorites: [],
   addToCart: () => {},
-  fetchProducts: () => {},
   addToFavorites: () => {},
   removeFromFavorites: () => {},
 };
@@ -42,24 +39,9 @@ type Props = {
 };
 export function ProductProvider({ children }: Props) {
   const [cart, setCart] = useState<ProductModel[]>([]);
-  const [favorites, setFavorites] = useState<FavoriteModel[]>([]);
+  const [favorites, setFavorites] = useState<ProductModel[]>([]);
   const { data: session }: any = useSession();
   const { openAlert } = useGlobal();
-
-  useEffect(() => {
-    // fetchFavorites();
-  }, [session?.user.id]);
-  async function fetchFavorites() {
-    if (session?.user.id) {
-      try {
-        const response = await fetch(`/api/user/${session?.user.id}/favorites`);
-        const favorites = await response.json();
-        setFavorites(favorites);
-      } catch (error: any) {
-        openAlert(error.message);
-      }
-    }
-  }
 
   async function removeFromFavorites(id: String) {
     try {
@@ -77,9 +59,7 @@ export function ProductProvider({ children }: Props) {
       openAlert(error.message);
     }
   }
-  function fetchProducts() {
-    // fetchApiProducts();
-  }
+
   function addToCartHandler(product: ProductModel) {
     setCart([...cart, product]);
   }
@@ -112,9 +92,7 @@ export function ProductProvider({ children }: Props) {
     favorites: favorites,
     addToCart: addToCartHandler,
     addToFavorites: addToFavoritesHandler,
-    fetchFavorites: fetchFavorites,
     removeFromFavorites: removeFromFavorites,
-    fetchProducts: fetchProducts,
   };
 
   return (
