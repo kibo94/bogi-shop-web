@@ -1,11 +1,5 @@
 "use client";
-import {
-  useContext,
-  createContext,
-  ReactNode,
-  useState,
-  useEffect,
-} from "react";
+import { useContext, createContext, ReactNode, useState } from "react";
 import { ProductModel } from "../../models/product";
 import { useSession } from "next-auth/react";
 import { useGlobal } from "./GlobalContext";

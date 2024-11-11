@@ -7,8 +7,8 @@ import { AuthProvider } from "./context/AuthContext";
 import Provider from "@components/SessionProvider";
 import { GlobalProvider } from "./context/GlobalContext";
 import { Inter as FontSans } from "next/font/google";
+import { Providers } from "@store/provider";
 import { cn } from "@lib/utils";
-
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -28,18 +28,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn("font-sans", fontSans.variable)}>
-        <GlobalProvider>
-          <AlertDialog />
-          <Provider>
-            <AuthProvider>
-              <ProductProvider>
-                <NavBar />
-                <div className="container">{children}</div>
-                <div className="footer mt-20">CPY BY BOJAN947</div>
-              </ProductProvider>
-            </AuthProvider>
-          </Provider>
-        </GlobalProvider>
+        <Providers>
+          <GlobalProvider>
+            <AlertDialog />
+            <Provider>
+              <AuthProvider>
+                <ProductProvider>
+                  <NavBar />
+                  <div className="container">{children}</div>
+                  <div className="footer mt-20">CPY BY BOJAN947</div>
+                </ProductProvider>
+              </AuthProvider>
+            </Provider>
+          </GlobalProvider>
+        </Providers>
       </body>
     </html>
   );
