@@ -1,18 +1,30 @@
 "use client";
-import Products from "@components/Products";
-import Users from "@components/Users";
-import { Button } from "@components/ui/button";
 import { User } from "@models/user";
 import React, { useEffect, useState } from "react";
-import AddAdminForm from "./_components/AddAdminForm";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import { useAppDispatch, useAppSelector } from "@store/hooks/hooks";
+import { fetchProducts } from "@store/actions";
+import { Tabs, TabsList } from "@radix-ui/react-tabs";
+import { Button } from "@components/ui/button";
+import { TabsContent, TabsTrigger } from "@components/ui/tabs";
 import ProductForm from "./_components/CreateProductForm";
-import useFetchData from "@hooks/useProducts";
+import Products from "@components/Products";
+import AddAdminForm from "./_components/AddAdminForm";
+import Users from "@components/Users";
 const AdminPage = () => {
-  const [products, refetch] = useFetchData("/api/products");
-
+  const dispatch = useAppDispatch();
   const [users, setUsers] = useState<User[]>([]);
   const [activeTab, setActiveTab] = useState("products");
+  // Access products, loading status, and error from the Redux store
+  const {
+    items: products,
+    loading,
+    error,
+  } = useAppSelector((state) => state.product);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
   useEffect(() => {
     const fetchPosts = async () => {
       const response2 = await fetch(`/api/users/admin`);
@@ -25,15 +37,10 @@ const AdminPage = () => {
   const handleTabChange = (value: any) => {
     setActiveTab(value);
     if (value == "products") {
-      refetch();
     }
   };
 
-  function deleteProductHandler() {
-    refetch();
-  }
   function productCreated() {
-    refetch();
     setActiveTab("products");
   }
 
@@ -52,14 +59,10 @@ const AdminPage = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="products">
-          {products.loading ? (
+          {loading ? (
             <h2>Loading products ...</h2>
           ) : (
-            <Products
-              products={products.data}
-              isAdmin={true}
-              deleteProduct={deleteProductHandler}
-            />
+            <Products products={products} isAdmin={true} />
           )}
         </TabsContent>
         <TabsContent value="create-product">

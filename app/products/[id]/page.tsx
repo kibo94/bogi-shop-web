@@ -3,22 +3,23 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import productImg from "../../../public/assets/images/product-img.png";
 import Image from "next/image";
-import { ProductModel } from "@/models/product";
 import ProductRating from "@/components/Rating";
 import Comment from "@/components/Comment";
 import { useProduct } from "@app/context/ProductContext";
+import { useAppDispatch, useAppSelector } from "@store/hooks/hooks";
+import { fetchProduct, fetchProducts } from "@store/actions";
 
 function SingleProduct() {
   const params = useParams();
+  const dispatch = useAppDispatch();
   const { addToCart } = useProduct();
   const { id } = params;
   const [comments, setComments] = useState([]);
-  const [product, setProduct] = useState<ProductModel>();
+  const { product } = useAppSelector((state) => state.product);
+
   useEffect(() => {
+    dispatch(fetchProduct(id));
     const fetchPosts = async () => {
-      const res2 = await fetch(`/api/products/${id}`);
-      const product = await res2.json();
-      setProduct(product);
       const response = await fetch(`/api/products/${id}/comments`);
       const data = await response.json();
       setComments(data);
@@ -29,7 +30,16 @@ function SingleProduct() {
   return (
     <div className="mt-20 singleProduct">
       <div className="flex flex-row gap-16 items-start">
-        <Image src={productImg} alt="product-img" width={500} height={200} />
+        <Image
+          src={
+            product?.productImageUrl != null
+              ? product?.productImageUrl
+              : productImg
+          }
+          alt="product-img"
+          width={500}
+          height={200}
+        />
         <div>
           <div className="flex row items-center gap-4">
             <h2 className="text-2xl">{product?.name}</h2>

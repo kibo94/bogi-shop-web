@@ -5,13 +5,11 @@ interface ProductsProps {
   products: ProductModel[];
   isFavorites?: boolean;
   isAdmin?: boolean;
-  deleteProduct?: () => void;
 }
 function Products({
   products,
   isFavorites = false,
   isAdmin = false,
-  deleteProduct = () => {},
 }: ProductsProps) {
   return (
     <div className="products mt-10">
@@ -21,7 +19,6 @@ function Products({
           key={product._id}
           isFavorites={isFavorites}
           isAdmin={isAdmin}
-          deleteProduct={deleteProduct}
         />
       ))}
     </div>

@@ -1,20 +1,18 @@
 "use client";
 import ProductForm from "@app/admin/_components/CreateProductForm";
 import { ProductModel } from "@models/product";
+import { fetchProduct } from "@store/actions";
+import { useAppDispatch, useAppSelector } from "@store/hooks/hooks";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 function EditProduct() {
   const params = useParams();
+  const dispatch = useAppDispatch();
   const { id } = params;
-  const [product, setProduct] = useState<ProductModel>();
+  const { product } = useAppSelector((state) => state.product);
   useEffect(() => {
-    const fetchProduct = async () => {
-      const res2 = await fetch(`/api/products/${id}`);
-      const product = await res2.json();
-      setProduct(product);
-    };
-    fetchProduct();
+    dispatch(fetchProduct(id));
   }, [id]);
   return (
     <div className="mt-8">

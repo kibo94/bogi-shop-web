@@ -13,6 +13,7 @@ export const POST = async (request) => {
         const proudcts = await Product.find({})
         return new Response(JSON.stringify(proudcts), { status: 201 })
     } catch (error) {
+        console.log(error);
         return new Response("Failed to create a new prompt", { status: 500 });
     }
 }
@@ -50,8 +51,8 @@ export const DELETE = async (request) => {
         await Comment.deleteMany({ product: id })
         await Favorite.deleteMany({ product: id })
         await Product.findByIdAndDelete(id);
-
-        return new Response(JSON.stringify([]), { status: 201 })
+        const proudcts = await Product.find({})
+        return new Response(JSON.stringify(proudcts), { status: 201 })
     } catch (error) {
         return new Response("Failed to create a new sdas", { status: 500 });
     }

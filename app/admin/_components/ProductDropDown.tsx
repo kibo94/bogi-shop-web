@@ -4,6 +4,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
+import { deleteProduct } from "@store/actions";
+import { useAppDispatch } from "@store/hooks/hooks";
 import { MoreVertical } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,10 +13,10 @@ import { useRouter } from "next/navigation";
 import React from "react";
 interface ProductProps {
   id: string;
-  deleteProduct: () => void;
 }
-function ProductDropDown({ id, deleteProduct }: ProductProps) {
+function ProductDropDown({ id }: ProductProps) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -27,13 +29,7 @@ function ProductDropDown({ id, deleteProduct }: ProductProps) {
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={async () => {
-            await fetch("/api/products", {
-              method: "DELETE",
-              body: JSON.stringify({
-                id,
-              }),
-            });
-            deleteProduct();
+            dispatch(deleteProduct(id));
           }}
         >
           Delete

@@ -30,6 +30,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
+import { useAppDispatch } from "@store/hooks/hooks";
+import { addToProducts, updateProducts } from "@store/actions";
+import { create } from "domain";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -55,6 +58,7 @@ export function ProductForm({
 }: ProductFormProps) {
   const router = useRouter();
   const { openAlert } = useGlobal();
+  const dispatch = useAppDispatch();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -109,19 +113,33 @@ export function ProductForm({
     }
   }, []);
 
-  async function updateProducts(
+  async function updateProductsHandler(
     values: z.infer<typeof formSchema>,
     url: string
   ) {
-    await fetch("/api/products", {
-      method: isEdit ? "PUT" : "POST",
-      body: JSON.stringify({
-        ...values,
-        productImageUrl: `${url}`,
-        category: product?.category ? product.category : category,
-        id: isEdit ? product?._id : null,
-      }),
-    });
+    var body = {
+      ...values,
+      productImageUrl: `${
+        url != null && url.length == 0 ? "https://placehold.co/600x400" : url
+      }`,
+      category: product?.category ? product.category : category,
+      id: isEdit ? product?._id : null,
+    };
+    if (isEdit) {
+      dispatch(
+        updateProducts({
+          method: "PUT",
+          body: JSON.stringify(body),
+        })
+      );
+    } else {
+      dispatch(
+        addToProducts({
+          method: "POST",
+          body: JSON.stringify(body),
+        })
+      );
+    }
 
     openAlert(`Product has been ${isEdit ? "updated" : "created"}`);
     if (isEdit) {
@@ -131,9 +149,6 @@ export function ProductForm({
     }
   }
 
-  function selectTheProduct(cat: any) {
-    console.log(cat);
-  }
   return (
     <>
       <h1 className="text-2xl mb-5">{type} product</h1>
@@ -258,12 +273,12 @@ export function ProductForm({
           async () => {
             const dwnURL = await getDownloadURL(uploadTask.snapshot.ref);
             setDownloadURL(dwnURL);
-            await updateProducts(values, dwnURL);
+            await updateProductsHandler(values, dwnURL);
           }
         );
         return;
       }
-      await updateProducts(values, productImageUrl);
+      await updateProductsHandler(values, productImageUrl);
     } catch (error: any) {
       openAlert(error.message);
     }

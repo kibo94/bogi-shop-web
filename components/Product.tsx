@@ -10,7 +10,6 @@ interface ProductInterface {
   product: ProductModel;
   isAdmin: boolean;
   isFavorites: boolean;
-  deleteProduct: () => void;
 }
 const Product = (props: ProductInterface) => {
   const router = useRouter();
@@ -22,7 +21,6 @@ const Product = (props: ProductInterface) => {
   function productDetails(id: any) {
     router.push(`/products/${id}`, {});
   }
-  console.log(productImageUrl);
 
   return (
     <div className="product relative">
@@ -92,12 +90,7 @@ const Product = (props: ProductInterface) => {
           </>
         )}
 
-        {props.isAdmin && (
-          <ProductDropDown
-            id={props.product["_id"]}
-            deleteProduct={props.deleteProduct}
-          />
-        )}
+        {props.isAdmin && <ProductDropDown id={props.product["_id"]} />}
       </div>
 
       <Image
